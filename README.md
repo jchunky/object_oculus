@@ -44,7 +44,7 @@ and `matches?`, which will match a regular expression:
 
     > 5.exactly? 5.0
     5.to_f() == 5.0
-    # => {:to_f=>5.0}
+    => {:to_f=>5.0}
 
     > "hello".matches? /^\d$/
     "hello".length()   == 5
