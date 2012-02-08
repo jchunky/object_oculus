@@ -25,7 +25,13 @@
 
 class Object
   def what?(*a)
-    WhatMethods::MethodFinder.show(self, *a)
+    WhatMethods::MethodFinder.show(self, {}, *a)
+  end
+  def exactly?(*a)
+    WhatMethods::MethodFinder.show(self, { :force_exact => true }, *a)
+  end
+  def matches?(*a)
+    WhatMethods::MethodFinder.show(self, { :force_regex => true }, *a)
   end
   alias_method :__clone__, :clone
   def clone
@@ -42,7 +48,8 @@ end
 
 module WhatMethods
   class MethodFinder
-    @@blacklist = %w(daemonize display exec exit! fork sleep system syscall what? ed emacs mate nano vi vim)
+    @@blacklist = %w(daemonize display exec exit! fork sleep system syscall what? exactly? matches? ed emacs mate nano vi vim)
+    @@operators = %w(+ - * / % ** == != > < >= <= <=> ===).map(&:to_sym)
     
     def initialize( obj, *args )
       @obj = obj
@@ -53,27 +60,56 @@ module WhatMethods
     end
     
     # Find all methods on [anObject] which, when called with [args] return [expectedResult]
-    def self.find( anObject, expectedResult, *args, &block )
+    def self.find( anObject, opts = {}, *args, &block )
+      expectedResult = args.shift
+      if opts[:force_regex]
+        expectedResult = Regexp.new(expectedResult) unless expectedResult.is_a?(Regexp)
+        checkResult = lambda { |a, b| a === b.to_s }
+      elsif expectedResult.is_a?(Regexp) && !opts[:force_exact]
+        checkResult = lambda { |a, b| a === b.to_s }
+      elsif opts[:force_exact]
+        checkResult = lambda { |a, b| a.eql?(b) }
+      else
+        checkResult = lambda { |a, b| a == b }
+      end
       stdout, stderr = $stdout, $stderr
       $stdout = $stderr = DummyOut.new
       # change this back to == if you become worried about speed and warnings.
       res = anObject.methods.
             select { |name| anObject.method(name).arity <= args.size }.
             select { |name| not @@blacklist.include? name }.
-            select { |name| begin 
-                     anObject.clone.method( name ).call( *args, &block ) == expectedResult; 
-                     rescue Object; end }
+            inject({}) { |result, name| begin 
+              stdout.print ""
+                     value = anObject.clone.method( name ).call( *args, &block )
+                     result[name] = value if checkResult.call(expectedResult, value)
+                     rescue Object; end; result }
       $stdout, $stderr = stdout, stderr
       res
     end
     
     # Pretty-prints the results of the previous method
-    def self.show( anObject, expectedResult, *args, &block)
-      find( anObject, expectedResult, *args, &block).each { |name|
-        print "#{anObject.inspect}.#{name}" 
-        print "(" + args.map { |o| o.inspect }.join(", ") + ")" unless args.empty?
-        puts " == #{expectedResult.inspect}" 
+    def self.show( anObject, opts = {}, *args, &block)
+      opts = { :force_regex => false, :force_exact => false }.merge(opts)
+      found = find( anObject, opts, *args, &block)
+      minLength = found.keys.map(&:size).max
+
+      args.shift
+      arguments = args.map { |o| o.inspect }.join(", ")
+
+      found.each { |name, value|
+        offset = minLength - name.to_s.size
+        puts "#{anObject.inspect}#{write_method(name) % arguments}#{" " * offset} == #{value.inspect}"
       }
+    end
+
+    private
+
+    def self.write_method(method)
+      if @@operators.include?(method)
+        " #{method} %s "
+      else
+        ".#{method}(%s)"
+      end
     end
   end
 end
