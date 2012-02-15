@@ -98,17 +98,21 @@ module WhatMethods
 
       found.each { |name, value|
         offset = minLength - name.to_s.size
-        puts "#{anObject.inspect}#{write_method(name) % arguments}#{" " * offset} == #{value.inspect}"
+        puts "#{anObject.inspect}#{write_method(name, arguments)}#{" " * offset} == #{value.inspect}"
       }
     end
 
     private
 
-    def self.write_method(method)
+    def self.write_method(method, arguments)
       if @@operators.include?(method)
-        " #{method} %s "
+        " #{method} #{arguments} "
+      elsif method == :[]
+        "[#{arguments}]   "
+      elsif arguments != ""
+        ".#{method}(#{arguments})"
       else
-        ".#{method}(%s)"
+        ".#{method} "
       end
     end
   end
