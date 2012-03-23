@@ -25,13 +25,13 @@
 
 class Object
   def what?(*a)
-    WhatMethods::MethodFinder.show(self, {}, *a)
+    WhatsUp::MethodFinder.show(self, {}, *a)
   end
   def exactly?(*a)
-    WhatMethods::MethodFinder.show(self, { :force_exact => true }, *a)
+    WhatsUp::MethodFinder.show(self, { :force_exact => true }, *a)
   end
   def matches?(*a)
-    WhatMethods::MethodFinder.show(self, { :force_regex => true }, *a)
+    WhatsUp::MethodFinder.show(self, { :force_regex => true }, *a)
   end
   alias_method :__clone__, :clone
   def clone
@@ -46,7 +46,7 @@ class DummyOut
   end
 end
 
-module WhatMethods
+module WhatsUp
   class MethodFinder
     @@blacklist = %w(daemonize display exec exit! fork sleep system syscall what? exactly? matches? ed emacs mate nano vi vim)
     @@operators = %w(+ - * / % ** == != > < >= <= <=> ===).map(&:to_sym)
