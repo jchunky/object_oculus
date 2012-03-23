@@ -18,19 +18,19 @@ module WhatsUp
       def build_check_lambda(expected_result, opts = {})
         if opts[:force_regex]
           expected_result = Regexp.new(expected_result.to_s) unless expected_result.is_a?(Regexp)
-          -> value { expected_result === value.to_s }
+          ->(value) { expected_result === value.to_s }
         elsif expected_result.is_a?(Regexp) && !opts[:force_exact]
-          -> value { expected_result === value.to_s }
+          ->(value) { expected_result === value.to_s }
         elsif opts[:force_exact]
-          -> value { expected_result.eql?(value) }
+          ->(value) { expected_result.eql?(value) }
         elsif opts[:show_all]
           if opts[:exclude_blank]
-            -> value { !value.nil? && !value.empty? }
+            ->(value) { !value.nil? && !value.empty? }
           else
-            -> value { true }
+            ->(value) { true }
           end
         else
-          -> value { expected_result == value }
+          ->(value) { expected_result == value }
         end
       end
 

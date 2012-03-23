@@ -9,9 +9,9 @@ module WhatsUp
 
     private
 
-    def show_methods
+    def show_methods(expected_result, opts = {}, *args, &block)
       @args = args unless args.empty?
-      WhatsUp::MethodFinder.show(@object, expected_result, opts, *@args)
+      MethodFinder.show(@object, expected_result, opts, *@args)
     end
   end
 end
