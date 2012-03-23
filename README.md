@@ -14,7 +14,7 @@ Ever asked: "if I have an object, what method can I call on it to get that resul
 
 See if this suits your console cravings:
 
-    > 3.45.what? 3
+    > 3.45.what_equals 3
     3.45.to_i()     == 3
     3.45.to_int()   == 3
     3.45.floor()    == 3
@@ -22,22 +22,22 @@ See if this suits your console cravings:
     3.45.truncate() == 3
     => {:to_i=>3, :to_int=>3, :floor=>3, :round=>3, :truncate=>3}
 
-    > 3.45.what? 4
+    > 3.45.what_equals 4
     3.45.ceil() == 4
     => {:ceil=>4}
 
-    > 3.55.what? 4
+    > 3.55.what_equals 4
     3.55.ceil()  == 4
     3.55.round() == 4
     => {:ceil=>4, :round=>4}
 
-    > 3.45.what? /\n/
+    > 3.45.what_equals /\n/
     3.45.psych_to_yaml()  == "--- 3.45\n...\n"
     3.45.to_yaml()        == "--- 3.45\n...\n"
     3.45.pretty_inspect() == "3.45\n"
     => {:psych_to_yaml=>"--- 3.45\n...\n", :to_yaml=>"--- 3.45\n...\n", :pretty_inspect=>"3.45\n"}
     
-    > 3.what?(4,1)
+    > 3.what_equals 4, 1
     3 + 1  == 4
     => {:+=>4}
 
@@ -69,7 +69,7 @@ Note also the addition of helpers like `whats_exactly`, which will only find exa
     => {:length=>5, :size=>5, :bytesize=>5, :to_i=>0, :hex=>0, :oct=>0}
 
 And if you just want to know everything, I've added `what_works_with` that lists the results of all
-current methods and `whats_not_empty_with`:
+current methods and `whats_not_blank_with` that ignores any false, falsy or empty values:
 
     > "hello".what_works_with 2
     "hello" <=> 2   == nil
@@ -83,9 +83,12 @@ current methods and `whats_not_empty_with`:
     "hello".upto(2) == #<Enumerator: "hello":upto(2)>
     # ...
 
-    > "hello".whats_not_empty_with 2
+    > "hello".whats_not_blank_with 2
     "hello" * 2     == "hellohello"
     "hello" % 2     == "hello"
     "hello"[2]      == "l"
     "hello".upto(2) == #<Enumerator: "hello":upto(2)>
     # ...
+
+In line with the original `what_methods` gem, you can `require "whats_up/classic"` to enable aliases
+like `what?`, `matches?`, `exactly?`, `works?`, etc.

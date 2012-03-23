@@ -24,10 +24,9 @@
 # Last updated: 2006/05/20
 
 class Object
-  def what?(*a)
+  def what_equals(*a)
     WhatsUp::MethodFinder.show(self, {}, *a)
   end
-  alias :what_equals :what?
 
   def whats_exactly(*a)
     WhatsUp::MethodFinder.show(self, { force_exact: true }, *a)
@@ -41,8 +40,8 @@ class Object
     WhatsUp::MethodFinder.show(self, { show_all: true }, *a)
   end
 
-  def whats_not_empty_with(*a)
-    WhatsUp::MethodFinder.show(self, { show_all: true, exclude_empty: true }, *a)
+  def whats_not_blank_with(*a)
+    WhatsUp::MethodFinder.show(self, { show_all: true, exclude_blank: true }, *a)
   end
 
   # Make sure cloning doesn't cause anything to fail via type errors
@@ -62,9 +61,10 @@ end
 
 module WhatsUp
   class MethodFinder
-    @@blacklist = %w(daemonize display exec exit! fork sleep system syscall what? what_equals
+    @@blacklist = %w(daemonize display exec exit! fork sleep system syscall what_equals
                      whats_exactly what_matches whats_up ed emacs mate nano vi vim)
-    @@operators = %w(+ - * / % ** == != =~ !~ !=~ > < >= <= <=> === & | ^ << >>).map(&:to_sym)
+    @@infixes   = %w(+ - * / % ** == != =~ !~ !=~ > < >= <= <=> === & | ^ << >>).map(&:to_sym)
+    @@prefixes  = %w(+@ -@ ~ !).map(&:to_sym)
     
     def initialize(obj, *args)
       @obj = obj
@@ -83,7 +83,7 @@ module WhatsUp
         elsif opts[:force_exact]
           -> a, b { a.eql?(b) }
         elsif opts[:show_all]
-          if opts[:exclude_empty]
+          if opts[:exclude_blank]
             -> a, b { !b.nil? && !b.empty? }
           else
             -> a, b { true }
@@ -132,7 +132,7 @@ module WhatsUp
           force_regex:   false,
           force_exact:   false,
           show_all:      false,
-          exclude_empty: false
+          exclude_blank: false
         }.merge(opts)
 
         expected_result = opts[:show_all] ? nil : args.shift
@@ -158,12 +158,12 @@ module WhatsUp
         pretty_object = truncate_inspect(an_object, to: 40)
 
         found.map do |key, value|
-          pretty_key = if @@operators.include?(key)
+          pretty_key = if @@infixes.include?(key)
                          "#{pretty_object} #{key} #{args}"
+                       elsif @@prefixes.include?(key)
+                         "#{key.to_s.sub /\@$/, ""}#{pretty_object}"
                        elsif key == :[]
                          "#{pretty_object}[#{args}]"
-                       elsif key == :+@
-                         "+#{pretty_object}"
                        elsif args != ""
                          "#{pretty_object}.#{key}(#{args})"
                        else
