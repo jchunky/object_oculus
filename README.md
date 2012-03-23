@@ -91,4 +91,4 @@ current methods and `whats_not_blank_with` that ignores any false, falsy or empt
     # ...
 
 In line with the original `what_methods` gem, you can `require "whats_up/classic"` to enable aliases
-like `what?`, `matches?`, `exactly?`, `works?`, etc.
+like `what?`, `matches?`, `exactly?`, `works?` and `not_blank?`.
