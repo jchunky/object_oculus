@@ -38,8 +38,11 @@ See if this suits your console cravings:
     => {:psych_to_yaml=>"--- 3.45\n...\n", :to_yaml=>"--- 3.45\n...\n", :pretty_inspect=>"3.45\n"}
     
     > 3.what_equals 4, 1
-    3 + 1  == 4
+    3 + 1 == 4
     => {:+=>4}
+
+    > 3.given(1).what_equals 4
+    3 + 1 == 4
 
 Just what you need in the console.
 
@@ -51,6 +54,12 @@ what method will return the desired result if you pass those parameters to it.
 This modest little update retains the original `what?` method, but that was from the halcyon days of
 2006, before the Ruby community had a rough consensus that `?` methods should be returning a true or
 false value (or at least something useable as such). I've aliased that method as `what_equals`.
+
+You can add arguments by either supplying additional arguments after the expected result or by using
+the `given` method. So the following two queries are equivalent:
+
+    5.given(1).what_equals 6
+    5.what_equals 6, 1
 
 Note also the addition of helpers like `whats_exactly`, which will only find exact matches, and
 `what_matches`, which will match a regular expression:
@@ -83,7 +92,7 @@ current methods and `whats_not_blank_with` that ignores any false, falsy or empt
     "hello".upto(2) == #<Enumerator: "hello":upto(2)>
     # ...
 
-    > "hello".whats_not_blank_with 2
+    > "hello".given(2).whats_not_blank
     "hello" * 2     == "hellohello"
     "hello" % 2     == "hello"
     "hello"[2]      == "l"
