@@ -6,7 +6,7 @@ functionality and bring syntax a bit more in line with the Ruby status quo. It's
 batted around the internet for a while, with rough etchings dating to 2002. So this is my shot at
 it.
 
-Dr. Nic says (or is heard from echoes traversing the sands of time):
+**Dr. Nic says** (or is heard from echoes traversing the sands of time)**:**
 
 This is from Dr. Nic.  See http://drnicwilliams.com/2006/10/12/my-irbrc-for-consoleirb/
 
@@ -46,7 +46,7 @@ Just what you need in the console.
 Notice the last example: you can pass parameters after the desired result. whats_up will tell you
 what method will return the desired result if you pass those parameters to it.
 
-Bryan says:
+**Bryan says:**
 
 This modest little update retains the original `what?` method, but that was from the halcyon days of
 2006, before the Ruby community had a rough consensus that `?` methods should be returning a true or
