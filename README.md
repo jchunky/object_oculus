@@ -55,11 +55,11 @@ false value (or at least something useable as such). I've aliased that method as
 Note also the addition of helpers like `whats_exactly`, which will only find exact matches, and
 `what_matches`, which will match a regular expression:
 
-    > 5.exactly? 5.0
+    > 5.whats_exactly 5.0
     5.to_f() == 5.0
     => {:to_f=>5.0}
 
-    > "hello".matches? /^\d$/
+    > "hello".what_matches /^\d$/
     "hello".length()   == 5
     "hello".size()     == 5
     "hello".bytesize() == 5
@@ -68,5 +68,24 @@ Note also the addition of helpers like `whats_exactly`, which will only find exa
     "hello".oct()      == 0
     => {:length=>5, :size=>5, :bytesize=>5, :to_i=>0, :hex=>0, :oct=>0}
 
-And if you just want to know everything, I've added `whats_up` that lists the results of all current
-methods:
+And if you just want to know everything, I've added `what_works_with` that lists the results of all
+current methods and `whats_not_empty_with`:
+
+    > "hello".what_works_with 2
+    "hello" <=> 2   == nil
+    "hello" == 2    == false
+    "hello" === 2   == false
+    "hello".eql?(2) == false
+    "hello" * 2     == "hellohello"
+    "hello" % 2     == "hello"
+    "hello"[2]      == "l"
+    "hello" =~ 2    == nil
+    "hello".upto(2) == #<Enumerator: "hello":upto(2)>
+    # ...
+
+    > "hello".whats_not_empty_with 2
+    "hello" * 2     == "hellohello"
+    "hello" % 2     == "hello"
+    "hello"[2]      == "l"
+    "hello".upto(2) == #<Enumerator: "hello":upto(2)>
+    # ...

@@ -30,11 +30,19 @@ class Object
   alias :what_equals :what?
 
   def whats_exactly(*a)
-    WhatsUp::MethodFinder.show(self, { :force_exact => true }, *a)
+    WhatsUp::MethodFinder.show(self, { force_exact: true }, *a)
   end
   
   def what_matches(*a)
-    WhatsUp::MethodFinder.show(self, { :force_regex => true }, *a)
+    WhatsUp::MethodFinder.show(self, { force_regex: true }, *a)
+  end
+
+  def what_works_with(*a)
+    WhatsUp::MethodFinder.show(self, { show_all: true }, *a)
+  end
+
+  def whats_not_empty_with(*a)
+    WhatsUp::MethodFinder.show(self, { show_all: true, exclude_empty: true }, *a)
   end
 
   # Make sure cloning doesn't cause anything to fail via type errors
@@ -46,78 +54,141 @@ class Object
   end
 end
 
+# A class to suppress anything that would normally output to $stdout
 class DummyOut
-  def write(*args)
-  end
+  # Does nothing (instead of writing to $stdout)
+  def write(*args); end
 end
 
 module WhatsUp
   class MethodFinder
-    @@blacklist = %w(daemonize display exec exit! fork sleep system syscall what? exactly? matches? ed emacs mate nano vi vim)
-    @@operators = %w(+ - * / % ** == != > < >= <= <=> ===).map(&:to_sym)
+    @@blacklist = %w(daemonize display exec exit! fork sleep system syscall what? what_equals
+                     whats_exactly what_matches whats_up ed emacs mate nano vi vim)
+    @@operators = %w(+ - * / % ** == != =~ !~ !=~ > < >= <= <=> === & | ^ << >>).map(&:to_sym)
     
-    def initialize( obj, *args )
+    def initialize(obj, *args)
       @obj = obj
       @args = args
     end
-    def ==( val )
-      MethodFinder.show( @obj, val, *@args )
+    def ==(val)
+      MethodFinder.show(@obj, val, *@args)
     end
     
-    # Find all methods on [anObject] which, when called with [args] return [expectedResult]
-    def self.find( anObject, opts = {}, *args, &block )
-      expectedResult = args.shift
-      if opts[:force_regex]
-        expectedResult = Regexp.new(expectedResult) unless expectedResult.is_a?(Regexp)
-        checkResult = lambda { |a, b| a === b.to_s }
-      elsif expectedResult.is_a?(Regexp) && !opts[:force_exact]
-        checkResult = lambda { |a, b| a === b.to_s }
-      elsif opts[:force_exact]
-        checkResult = lambda { |a, b| a.eql?(b) }
-      else
-        checkResult = lambda { |a, b| a == b }
+    class << self
+      def build_check_lambda(expected_result, opts = {})
+        if opts[:force_regex]
+          -> a, b { a === b.to_s }
+        elsif expected_result.is_a?(Regexp) && !opts[:force_exact]
+          -> a, b { a === b.to_s }
+        elsif opts[:force_exact]
+          -> a, b { a.eql?(b) }
+        elsif opts[:show_all]
+          if opts[:exclude_empty]
+            -> a, b { !b.nil? && !b.empty? }
+          else
+            -> a, b { true }
+          end
+        else
+          -> a, b { a == b }
+        end
       end
-      stdout, stderr = $stdout, $stderr
-      $stdout = $stderr = DummyOut.new
-      # change this back to == if you become worried about speed and warnings.
-      res = anObject.methods.
-            select { |name| anObject.method(name).arity <= args.size }.
-            select { |name| not @@blacklist.include? name }.
-            inject({}) { |result, name| begin 
-              stdout.print ""
-                     value = anObject.clone.method( name ).call( *args, &block )
-                     result[name] = value if checkResult.call(expectedResult, value)
-                     rescue Object; end; result }
-      $stdout, $stderr = stdout, stderr
-      res
-    end
-    
-    # Pretty-prints the results of the previous method
-    def self.show( anObject, opts = {}, *args, &block)
-      opts = { :force_regex => false, :force_exact => false }.merge(opts)
-      found = find( anObject, opts, *args, &block)
-      minLength = found.keys.map(&:size).max
 
-      args.shift
-      arguments = args.map { |o| o.inspect }.join(", ")
+      # Find all methods on [an_object] which, when called with [args] return [expected_result]
+      def find(an_object, expected_result, opts = {}, *args, &block)
+        check_result    = build_check_lambda(expected_result, opts)
 
-      found.each { |name, value|
-        offset = minLength - name.to_s.size
-        puts "#{anObject.inspect}#{write_method(name, arguments)}#{" " * offset} == #{value.inspect}"
-      }
-    end
+        if opts[:force_regex] && expected_result.is_a?(String)
+          expected_result = Regexp.new(expected_result)
+        end
 
-    private
+        # Prevent any writing to the terminal
+        stdout, stderr = $stdout, $stderr
+        $stdout = $stderr = DummyOut.new
 
-    def self.write_method(method, arguments)
-      if @@operators.include?(method)
-        " #{method} #{arguments} "
-      elsif method == :[]
-        "[#{arguments}]   "
-      elsif arguments != ""
-        ".#{method}(#{arguments})"
-      else
-        ".#{method} "
+        methods = an_object.methods
+
+        # Use only methods with valid arity that aren't blacklisted
+        methods.select! { |n| an_object.method(n).arity <= args.size && !@@blacklist.include?(n) }
+
+        # Collect all methods equaling the expected result
+        results = methods.inject({}) do |res, name|
+          begin
+            stdout.print ""
+            value = an_object.clone.method(name).call(*args, &block)
+            res[name] = value if check_result.call(expected_result, value)
+          rescue
+          end
+          res
+        end
+
+        # Restore printing to the terminal
+        $stdout, $stderr = stdout, stderr
+        results
+      end
+      
+      # Pretty-prints the results of the previous method
+      def show(an_object, opts = {}, *args, &block)
+        opts = {
+          force_regex:   false,
+          force_exact:   false,
+          show_all:      false,
+          exclude_empty: false
+        }.merge(opts)
+
+        expected_result = opts[:show_all] ? nil : args.shift
+        found = find(an_object, expected_result, opts, *args, &block)
+        prettified = prettify_found(an_object, found, *args)
+        max_length = prettified.map { |k, v| k.length }.max
+
+        prettified.each do |key, value|
+          puts "#{key.ljust max_length} == #{value}"
+        end
+
+        found
+      end
+
+      private
+
+      # Pretty prints a method depending on whether it's an operator, has arguments, is array/hash
+      # syntax, etc. For example:
+      #
+      #   
+      def prettify_found(an_object, found, *args)
+        args = args.map { |o| o.inspect }.join(", ")
+        pretty_object = truncate_inspect(an_object, to: 40)
+
+        found.map do |key, value|
+          pretty_key = if @@operators.include?(key)
+                         "#{pretty_object} #{key} #{args}"
+                       elsif key == :[]
+                         "#{pretty_object}[#{args}]"
+                       elsif key == :+@
+                         "+#{pretty_object}"
+                       elsif args != ""
+                         "#{pretty_object}.#{key}(#{args})"
+                       else
+                         "#{pretty_object}.#{key}"
+                       end
+
+          pretty_value = truncate_inspect(value, to: 120)
+
+          [pretty_key, pretty_value]
+        end
+      end
+
+      # Inspects an object and returns a string representation, truncating it to length in the
+      # provided <tt>to:</tt> argument if necessary
+      def truncate_inspect(object, opts = {})
+        max_length = opts[:to] || 80
+        full       = object.inspect
+
+        if full.length > max_length
+          left_cutoff  = (max_length - 5) * 2 / 3.0
+          right_cutoff = max_length - 6 - left_cutoff
+          "#{full[0..left_cutoff]} ... #{full[-right_cutoff..-1]}"
+        else
+          full
+        end
       end
     end
   end
