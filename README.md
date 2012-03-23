@@ -15,26 +15,26 @@ Ever asked: "if I have an object, what method can I call on it to get that resul
 See if this suits your console cravings:
 
     > 3.45.what_equals 3
-    3.45.to_i()     == 3
-    3.45.to_int()   == 3
-    3.45.floor()    == 3
-    3.45.round()    == 3
-    3.45.truncate() == 3
+    3.45.to_i     == 3
+    3.45.to_int   == 3
+    3.45.floor    == 3
+    3.45.round    == 3
+    3.45.truncate == 3
     => {:to_i=>3, :to_int=>3, :floor=>3, :round=>3, :truncate=>3}
 
     > 3.45.what_equals 4
-    3.45.ceil() == 4
+    3.45.ceil == 4
     => {:ceil=>4}
 
     > 3.55.what_equals 4
-    3.55.ceil()  == 4
-    3.55.round() == 4
+    3.55.ceil  == 4
+    3.55.round == 4
     => {:ceil=>4, :round=>4}
 
     > 3.45.what_equals /\n/
-    3.45.psych_to_yaml()  == "--- 3.45\n...\n"
-    3.45.to_yaml()        == "--- 3.45\n...\n"
-    3.45.pretty_inspect() == "3.45\n"
+    3.45.psych_to_yaml  == "--- 3.45\n...\n"
+    3.45.to_yaml        == "--- 3.45\n...\n"
+    3.45.pretty_inspect == "3.45\n"
     => {:psych_to_yaml=>"--- 3.45\n...\n", :to_yaml=>"--- 3.45\n...\n", :pretty_inspect=>"3.45\n"}
     
     > 3.what_equals 4, 1
@@ -56,16 +56,16 @@ Note also the addition of helpers like `whats_exactly`, which will only find exa
 `what_matches`, which will match a regular expression:
 
     > 5.whats_exactly 5.0
-    5.to_f() == 5.0
+    5.to_f == 5.0
     => {:to_f=>5.0}
 
     > "hello".what_matches /^\d$/
-    "hello".length()   == 5
-    "hello".size()     == 5
-    "hello".bytesize() == 5
-    "hello".to_i()     == 0
-    "hello".hex()      == 0
-    "hello".oct()      == 0
+    "hello".length   == 5
+    "hello".size     == 5
+    "hello".bytesize == 5
+    "hello".to_i     == 0
+    "hello".hex      == 0
+    "hello".oct      == 0
     => {:length=>5, :size=>5, :bytesize=>5, :to_i=>0, :hex=>0, :oct=>0}
 
 And if you just want to know everything, I've added `what_works_with` that lists the results of all
