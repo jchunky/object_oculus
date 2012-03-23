@@ -33,25 +33,25 @@ class Object
     end
   end
 
-  def what_equals(expected_result, *args)
-    show_methods expected_result, {}, *args
+  def what_equals(expected_result, *args, &block)
+    show_methods expected_result, {}, *args, &block
   end
 
-  def whats_exactly(expected_result, *args)
-    show_methods expected_result, { force_exact: true }, *args
+  def whats_exactly(expected_result, *args, &block)
+    show_methods expected_result, { force_exact: true }, *args, &block
   end
   
-  def what_matches(expected_result, *args)
-    show_methods expected_result, { force_regex: true }, *args
+  def what_matches(expected_result, *args, &block)
+    show_methods expected_result, { force_regex: true }, *args, &block
   end
 
-  def what_works_with(*args)
-    show_methods nil, { show_all: true }, *args
+  def what_works_with(*args, &block)
+    show_methods nil, { show_all: true }, *args, &block
   end
   alias :what_works :what_works_with
 
-  def whats_not_blank_with(*args)
-    show_methods nil, { show_all: true, exclude_blank: true }, *args
+  def whats_not_blank_with(*args, &block)
+    show_methods nil, { show_all: true, exclude_blank: true }, *args, &block
   end
   alias :whats_not_blank :whats_not_blank_with
 
@@ -65,9 +65,9 @@ class Object
 
   private
 
-  def show_methods(expected_result, opts = {}, *args)
+  def show_methods(expected_result, opts = {}, *args, &block)
     @args = args unless args.empty?
-    WhatsUp::MethodFinder.show(self, expected_result, opts, *@args)
+    WhatsUp::MethodFinder.show(self, expected_result, opts, *@args, &block)
   end
 end
 

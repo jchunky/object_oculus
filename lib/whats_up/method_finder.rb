@@ -65,10 +65,10 @@ module WhatsUp
       # Pretty-prints the results of the previous method
       def show(an_object, expected_result, opts = {}, *args, &block)
         opts = {
-          force_regex:   false,
+          exclude_blank: false,
           force_exact:   false,
-          show_all:      false,
-          exclude_blank: false
+          force_regex:   false,
+          show_all:      false
         }.merge(opts)
 
         found = find(an_object, expected_result, opts, *args, &block)
