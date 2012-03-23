@@ -20,59 +20,15 @@
 #   http://www.doublegifts.com/pub/ruby/methodfinder.rb.html
 # * Checks permutations of arguments
 #   http://www.doublegifts.com/pub/ruby/methodfinder2.rb.html
-#
-# Last updated: 2006/05/20
-
-class Object
-  def given(*args)
-    if frozen?
-      WhatsUp::FrozenSection.new self, args: args
-    else
-      @args = args
-      self
-    end
-  end
-
-  def what_equals(expected_result, *args, &block)
-    show_methods expected_result, {}, *args, &block
-  end
-
-  def whats_exactly(expected_result, *args, &block)
-    show_methods expected_result, { force_exact: true }, *args, &block
-  end
-  
-  def what_matches(expected_result, *args, &block)
-    show_methods expected_result, { force_regex: true }, *args, &block
-  end
-
-  def what_works_with(*args, &block)
-    show_methods nil, { show_all: true }, *args, &block
-  end
-  alias :what_works :what_works_with
-
-  def whats_not_blank_with(*args, &block)
-    show_methods nil, { show_all: true, exclude_blank: true }, *args, &block
-  end
-  alias :whats_not_blank :whats_not_blank_with
-
-  # Make sure cloning doesn't cause anything to fail via type errors
-  alias_method :__clone__, :clone
-  def clone
-    __clone__
-  rescue TypeError
-    self
-  end
-
-  private
-
-  def show_methods(expected_result, opts = {}, *args, &block)
-    @args = args unless args.empty?
-    WhatsUp::MethodFinder.show(self, expected_result, opts, *@args, &block)
-  end
-end
 
 module WhatsUp
+  autoload :Classic,       "whats_up/classic"
   autoload :DummyOut,      "whats_up/dummy_out"
   autoload :FrozenSection, "whats_up/frozen_section"
   autoload :MethodFinder,  "whats_up/method_finder"
+  autoload :Methods,       "whats_up/methods"
+end
+
+class Object
+  include WhatsUp::Methods
 end
