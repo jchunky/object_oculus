@@ -77,19 +77,20 @@ module WhatsUp
     class << self
       def build_check_lambda(expected_result, opts = {})
         if opts[:force_regex]
-          -> a, b { a === b.to_s }
+          expected_result = Regexp.new(expected_result.to_s) unless expected_result.is_a?(Regexp)
+          -> value { expected_result === value.to_s }
         elsif expected_result.is_a?(Regexp) && !opts[:force_exact]
-          -> a, b { a === b.to_s }
+          -> value { expected_result === value.to_s }
         elsif opts[:force_exact]
-          -> a, b { a.eql?(b) }
+          -> value { expected_result.eql?(value) }
         elsif opts[:show_all]
           if opts[:exclude_blank]
-            -> a, b { !b.nil? && !b.empty? }
+            -> value { !value.nil? && !value.empty? }
           else
-            -> a, b { true }
+            -> value { true }
           end
         else
-          -> a, b { a == b }
+          -> value { expected_result == value }
         end
       end
 
@@ -97,17 +98,12 @@ module WhatsUp
       def find(an_object, expected_result, opts = {}, *args, &block)
         check_result    = build_check_lambda(expected_result, opts)
 
-        if opts[:force_regex] && expected_result.is_a?(String)
-          expected_result = Regexp.new(expected_result)
-        end
-
         # Prevent any writing to the terminal
         stdout, stderr = $stdout, $stderr
         $stdout = $stderr = DummyOut.new
 
-        methods = an_object.methods
-
         # Use only methods with valid arity that aren't blacklisted
+        methods = an_object.methods
         methods.select! { |n| an_object.method(n).arity <= args.size && !@@blacklist.include?(n) }
 
         # Collect all methods equaling the expected result
@@ -115,7 +111,7 @@ module WhatsUp
           begin
             stdout.print ""
             value = an_object.clone.method(name).call(*args, &block)
-            res[name] = value if check_result.call(expected_result, value)
+            res[name] = value if check_result.call(value)
           rescue
           end
           res
@@ -183,8 +179,10 @@ module WhatsUp
         full       = object.inspect
 
         if full.length > max_length
-          left_cutoff  = (max_length - 5) * 2 / 3.0
-          right_cutoff = max_length - 6 - left_cutoff
+          available_length = max_length - 5  # to account for the " ... "
+          left_cutoff      = available_length * 2 / 3.0
+          right_cutoff     = available_length - left_cutoff - 1
+
           "#{full[0..left_cutoff]} ... #{full[-right_cutoff..-1]}"
         else
           full
