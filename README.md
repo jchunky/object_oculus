@@ -2,7 +2,9 @@ whats\_up
 =========
 
 This is a fork of Dr. Nic's excellent little `what_methods` utility, updated a bit to expand
-functionality and bring syntax a bit more in line with the Ruby status quo.
+functionality and bring syntax a bit more in line with the Ruby status quo. It's actually been
+batted around the internet for a while, with rough etchings dating to 2002. So this is my shot at
+it.
 
 Dr. Nic says (or is heard from echoes traversing the sands of time):
 

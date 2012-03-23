@@ -1,5 +1,5 @@
 # Some credits:
-# Code this verions is based on: Andrew Birkett
+# Code this version is based on: Andrew Birkett
 #   http://www.nobugs.org/developer/ruby/method_finder.html
 # Improvements from Why's blog entry
 # * what? == - Why
@@ -27,12 +27,17 @@ class Object
   def what?(*a)
     WhatsUp::MethodFinder.show(self, {}, *a)
   end
-  def exactly?(*a)
+  alias :what_equals :what?
+
+  def whats_exactly(*a)
     WhatsUp::MethodFinder.show(self, { :force_exact => true }, *a)
   end
-  def matches?(*a)
+  
+  def what_matches(*a)
     WhatsUp::MethodFinder.show(self, { :force_regex => true }, *a)
   end
+
+  # Make sure cloning doesn't cause anything to fail via type errors
   alias_method :__clone__, :clone
   def clone
     __clone__
