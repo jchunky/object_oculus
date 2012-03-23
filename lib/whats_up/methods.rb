@@ -2,7 +2,7 @@ module WhatsUp
   module Methods
     def given(*args)
       if frozen?
-        WhatsUp::FrozenSection.new self, args: args
+        FrozenSection.new self, args: args
       else
         @args = args
         self
@@ -43,7 +43,7 @@ module WhatsUp
 
     def show_methods(expected_result, opts = {}, *args, &block)
       @args = args unless args.empty?
-      WhatsUp::MethodFinder.show(self, expected_result, opts, *@args, &block)
+      MethodFinder.show(self, expected_result, opts, *@args, &block)
     end
   end
 end

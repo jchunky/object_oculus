@@ -62,7 +62,7 @@ module WhatsUp
         results
       end
       
-      # Pretty-prints the results of the previous method
+      # Pretty prints the results of the previous method
       def show(an_object, expected_result, opts = {}, *args, &block)
         opts = {
           exclude_blank: false,
@@ -71,13 +71,11 @@ module WhatsUp
           show_all:      false
         }.merge(opts)
 
-        found = find(an_object, expected_result, opts, *args, &block)
+        found      = find(an_object, expected_result, opts, *args, &block)
         prettified = prettify_found(an_object, found, *args)
         max_length = prettified.map { |k, v| k.length }.max
 
-        prettified.each do |key, value|
-          puts "#{key.ljust max_length} == #{value}"
-        end
+        prettified.each { |k, v| puts "#{k.ljust max_length} == #{v}" }
 
         found
       end
@@ -85,11 +83,9 @@ module WhatsUp
       private
 
       # Pretty prints a method depending on whether it's an operator, has arguments, is array/hash
-      # syntax, etc. For example:
-      #
-      #   
+      # syntax, etc.
       def prettify_found(an_object, found, *args)
-        args = args.map { |o| o.inspect }.join(", ")
+        args = args.map { |a| a.inspect }.join(", ")
         pretty_object = truncate_inspect(an_object, to: 40)
 
         found.map do |key, value|
@@ -119,7 +115,7 @@ module WhatsUp
 
         if full.length > max_length
           available_length = max_length - 5  # to account for the " ... "
-          left_cutoff      = available_length * 2 / 3.0
+          left_cutoff      = available_length * 2 / 3
           right_cutoff     = available_length - left_cutoff - 1
 
           "#{full[0..left_cutoff]} ... #{full[-right_cutoff..-1]}"
