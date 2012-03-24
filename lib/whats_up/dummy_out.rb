@@ -4,5 +4,8 @@ module WhatsUp
     # Does nothing (instead of writing to $stdout)
     def write(*args)
     end
+
+    def print(*args)
+    end
   end
 end

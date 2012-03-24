@@ -1,8 +1,10 @@
 module WhatsUp
   class MethodFinder
-    @@blacklist = %w(daemonize display exec exit! fork sleep system syscall what_equals
-                     whats_exactly what_matches what_works_with what_works whats_not_blank_with
-                     whats_not_blank given ed emacs mate nano vi vim)
+    @@blacklist = %w(daemonize display exec exit! fork sleep system syscall
+                     what_equals whats_exactly what_matches what_works_with what_works
+                     whats_not_blank_with whats_not_blank given
+                     ed emacs mate nano vi vim
+                     stub stub! stub_chain unstub unstub!).map(&:to_sym)
     @@infixes   = %w(+ - * / % ** == != =~ !~ !=~ > < >= <= <=> === & | ^ << >>).map(&:to_sym)
     @@prefixes  = %w(+@ -@ ~ !).map(&:to_sym)
     
@@ -40,7 +42,10 @@ module WhatsUp
 
         # Prevent any writing to the terminal
         stdout, stderr = $stdout, $stderr
-        $stdout = $stderr = DummyOut.new
+        unless $stdout.is_a?(DummyOut)
+          $stdout = $stderr = DummyOut.new
+          restore_std = true
+        end
 
         # Use only methods with valid arity that aren't blacklisted
         methods = an_object.methods
@@ -58,7 +63,7 @@ module WhatsUp
         end
 
         # Restore printing to the terminal
-        $stdout, $stderr = stdout, stderr
+        $stdout, $stderr = stdout, stderr if restore_std
         results
       end
       
