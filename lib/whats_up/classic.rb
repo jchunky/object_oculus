@@ -8,10 +8,6 @@ module WhatsUp
     alias :works?     :what_works_with
     alias :not_blank? :whats_not_blank_with
   end
-
-  class MethodFinder
-    @@blacklist += %w(what? exactly? matches? works? not_blank?)
-  end
 end
 
 class Object
