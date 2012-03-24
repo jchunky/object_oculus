@@ -20,7 +20,6 @@
 #   http://www.doublegifts.com/pub/ruby/methodfinder.rb.html
 # * Checks permutations of arguments
 #   http://www.doublegifts.com/pub/ruby/methodfinder2.rb.html
-
 module WhatsUp
   autoload :Classic,       "whats_up/classic"
   autoload :DummyOut,      "whats_up/dummy_out"
@@ -29,6 +28,6 @@ module WhatsUp
   autoload :Methods,       "whats_up/methods"
 end
 
-class Object
+class Object  # :nodoc:
   include WhatsUp::Methods
 end

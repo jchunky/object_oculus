@@ -1,21 +1,31 @@
 module WhatsUp
+  # A singleton class used to iterate over the methods of an object trying to match any returned
+  # values with an expected result. ny matches will then be pretty printed to the console.
   class MethodFinder
+    # A list of symbols indicated which methods to always ignore
     @@blacklist = %w(daemonize debug debugger display ed emacs exactly? exec exit! fork given
                      matches? mate nano not_blank? sleep stub stub! stub_chain syscall system unstub
                      unstub! vi vim what? what_equals what_matches what_works what_works_with
                      whats_exactly whats_not_blank whats_not_blank_with works?).map(&:to_sym)
+
+    # A list of symbols for infix operators for which Ruby has special syntax
     @@infixes   = %w(+ - * / % ** == != =~ !~ !=~ > < >= <= <=> === & | ^ << >>).map(&:to_sym)
+    
+    # A list of symbols for prefix operators for which Ruby has special syntax
     @@prefixes  = %w(+@ -@ ~ !).map(&:to_sym)
     
-    def initialize(obj, *args)
-      @obj = obj
-      @args = args
-    end
-    def ==(val)
-      MethodFinder.show(@obj, val, *@args)
-    end
-    
     class << self
+      # Builds a lambda for checking against the provided +expected_result+ given a hash of options.
+      # Given the value of a method, the result of this lambda will determine whether that method
+      # and value are included in the output of a whats_up method.
+      #
+      # ==== Options
+      #
+      # * <tt>:exclude_blank</tt> - Exclude blank values
+      # * <tt>:force_exact</tt> - Force values to be exactly equal
+      # * <tt>:force_regex</tt> - Coerce the +expected_result+ into a regular expression for pattern
+      #   matching
+      # * <tt>:show_all</tt> - Show the results of all methods
       def build_check_lambda(expected_result, opts = {})
         if opts[:force_regex]
           expected_result = Regexp.new(expected_result.to_s) unless expected_result.is_a?(Regexp)
@@ -26,7 +36,7 @@ module WhatsUp
           ->(value) { expected_result.eql?(value) }
         elsif opts[:show_all]
           if opts[:exclude_blank]
-            ->(value) { !value.nil? && !value.empty? }
+            ->(value) { !value.nil? && !(value.respond_to?(:empty?) && value.empty?) }
           else
             ->(value) { true }
           end
@@ -35,7 +45,7 @@ module WhatsUp
         end
       end
 
-      # Find all methods on [an_object] which, when called with [args] return [expected_result]
+      # Find all methods on +an_object+ which, when called with +args+ return +expected_result+
       def find(an_object, expected_result, opts = {}, *args, &block)
         check_result    = build_check_lambda(expected_result, opts)
 
@@ -52,8 +62,8 @@ module WhatsUp
 
         # Collect all methods equaling the expected result
         results = methods.inject({}) do |res, name|
+          stdout.print ""
           begin
-            stdout.print ""
             value = an_object.clone.method(name).call(*args, &block)
             res[name] = value if check_result.call(value)
           rescue
@@ -66,7 +76,7 @@ module WhatsUp
         results
       end
       
-      # Pretty prints the results of the previous method
+      # Pretty prints the results of #find
       def show(an_object, expected_result, opts = {}, *args, &block)
         opts = {
           exclude_blank: false,

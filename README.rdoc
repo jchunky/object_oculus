@@ -1,12 +1,11 @@
-whats\_up
-=========
+= whats\_up
 
-This is a fork of Dr. Nic's excellent little `what_methods` utility, updated a bit to expand
+This is a fork of Dr. Nic's excellent little what_methods utility, updated a bit to expand
 functionality and bring syntax a bit more in line with the Ruby status quo. It's actually been
 batted around the internet for a while, with rough etchings dating to 2002. So this is my shot at
 it.
 
-**Dr. Nic says** (or is heard from echoes traversing the sands of time)**:**
+<b>Dr. Nic says</b> (or is heard from echoes traversing the sands of time)<b>:</b>
 
 This is from Dr. Nic.  See http://drnicwilliams.com/2006/10/12/my-irbrc-for-consoleirb/
 
@@ -49,20 +48,20 @@ Just what you need in the console.
 Notice the last example: you can pass parameters after the desired result. whats_up will tell you
 what method will return the desired result if you pass those parameters to it.
 
-**Bryan says:**
+<b>Bryan says:</b>
 
-This modest little update retains the original `what?` method, but that was from the halcyon days of
-2006, before the Ruby community had a rough consensus that `?` methods should be returning a true or
-false value (or at least something useable as such). I've aliased that method as `what_equals`.
+This modest little update retains the original +what?+ method, but that was from the halcyon days of
+2006, before the Ruby community had a rough consensus that +?+ methods should be returning a true or
+false value (or at least something useable as such). I've aliased that method as +what_equals+.
 
 You can add arguments by either supplying additional arguments after the expected result or by using
-the `given` method. So the following two queries are equivalent:
+the +given+ method. So the following two queries are equivalent:
 
     5.given(1).what_equals 6
     5.what_equals 6, 1
 
-Note also the addition of helpers like `whats_exactly`, which will only find exact matches, and
-`what_matches`, which will match a regular expression:
+Note also the addition of helpers like +whats_exactly+, which will only find exact matches, and
++what_matches+, which will match a regular expression:
 
     > 5.whats_exactly 5.0
     5.to_f == 5.0
@@ -77,8 +76,8 @@ Note also the addition of helpers like `whats_exactly`, which will only find exa
     "hello".oct      == 0
     => {:length=>5, :size=>5, :bytesize=>5, :to_i=>0, :hex=>0, :oct=>0}
 
-And if you just want to know everything, I've added `what_works_with` that lists the results of all
-current methods and `whats_not_blank_with` that ignores any false, falsy or empty values:
+And if you just want to know everything, I've added +what_works_with+ that lists the results of all
+current methods and +whats_not_blank_with+ that ignores any false, falsy or empty values:
 
     > "hello".what_works_with 2
     "hello" <=> 2   == nil
@@ -99,5 +98,5 @@ current methods and `whats_not_blank_with` that ignores any false, falsy or empt
     "hello".upto(2) == #<Enumerator: "hello":upto(2)>
     # ...
 
-In line with the original `what_methods` gem, you can `require "whats_up/classic"` to enable aliases
-like `what?`, `matches?`, `exactly?`, `works?` and `not_blank?`.
+In line with the original +what_methods+ gem, you can <tt>require "whats_up/classic"</tt> to enable
+aliases like +what?+, +matches?+, +exactly?+, +works?+ and +not_blank?+.
