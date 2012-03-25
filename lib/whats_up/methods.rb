@@ -44,6 +44,20 @@ module WhatsUp
     end
     alias :whats_not_blank :whats_not_blank_with
 
+    # The list of all methods unique to an object
+    def unique_methods
+      methods - self.class.methods
+    end
+
+    # Lists all methods available to the object by ancestor
+    def methods_by_ancestor
+      result = {}
+      ([self] + self.class.ancestors).each do |object|
+        result[object] = object.unique_methods
+      end
+      result
+    end
+
     # Make sure cloning doesn't cause anything to fail via type errors
     alias_method :__clone__, :clone
 

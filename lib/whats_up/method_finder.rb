@@ -3,16 +3,15 @@ module WhatsUp
   # values with an expected result. ny matches will then be pretty printed to the console.
   class MethodFinder
     # A list of symbols indicated which methods to always ignore
-    @@blacklist = %w(daemonize debug debugger display ed emacs exactly? exec exit! fork given
-                     matches? mate nano not_blank? sleep stub stub! stub_chain syscall system unstub
-                     unstub! vi vim what? what_equals what_matches what_works what_works_with
-                     whats_exactly whats_not_blank whats_not_blank_with works?).map(&:to_sym)
+    @@blacklist  = %w(daemonize debug debugger display ed emacs exec exit! fork mate nano sleep
+                      stub stub! stub_chain syscall system unstub unstub! vi vim).map(&:to_sym)
+    @@blacklist += Methods.instance_methods
 
     # A list of symbols for infix operators for which Ruby has special syntax
-    @@infixes   = %w(+ - * / % ** == != =~ !~ !=~ > < >= <= <=> === & | ^ << >>).map(&:to_sym)
+    @@infixes    = %w(+ - * / % ** == != =~ !~ !=~ > < >= <= <=> === & | ^ << >>).map(&:to_sym)
     
     # A list of symbols for prefix operators for which Ruby has special syntax
-    @@prefixes  = %w(+@ -@ ~ !).map(&:to_sym)
+    @@prefixes   = %w(+@ -@ ~ !).map(&:to_sym)
     
     class << self
       # Builds a lambda for checking against the provided +expected_result+ given a hash of options.

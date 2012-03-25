@@ -1,5 +1,8 @@
 require "bundler/gem_tasks"
+require "rspec/core/rake_task"
 require "sdoc"
+
+RSpec::Core::RakeTask.new("spec")
 
 # Quick hack until SDoc gets fixed
 class RDoc::Generator::SDoc; alias :basedir :base_dir; end

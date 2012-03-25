@@ -18,6 +18,10 @@ module WhatsUp
     alias :works?     :what_works_with
     alias :not_blank? :whats_not_blank_with
   end
+
+  class MethodFinder
+    @@blacklist += Classic.instance_methods
+  end
 end
 
 class Object  # :nodoc:

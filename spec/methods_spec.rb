@@ -1,5 +1,3 @@
-require File.dirname(__FILE__) + "/spec_helper"
-
 describe Methods do
   before :all do
     @stderr,  @stdout = $stderr, $stdout

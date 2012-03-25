@@ -1,5 +1,3 @@
-require File.dirname(__FILE__) + "/spec_helper"
-
 describe "WhatsUp::Classic" do
   it "should not have any classic methods without Classic loaded" do
     "hello".should_not respond_to(:what?)
