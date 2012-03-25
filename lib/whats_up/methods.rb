@@ -51,11 +51,10 @@ module WhatsUp
 
     # Lists all methods available to the object by ancestor
     def methods_by_ancestor
-      result = {}
-      ([self] + self.class.ancestors).each do |object|
+      ([self] + self.class.ancestors).inject({}) do |result, object|
         result[object] = object.unique_methods
+        result
       end
-      result
     end
 
     # Make sure cloning doesn't cause anything to fail via type errors
