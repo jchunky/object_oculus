@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = WhatsUp::VERSION
   s.authors     = ["Bryan McKelvey", "Dr Nic Williams"]
   s.email       = ["bryan.mckelvey@gmail.com", "drnicwilliams@gmail.com"]
-  s.homepage    = "http://brymck.herokuapp.com/"
+  s.homepage    = "https://github.com/brymck/whats_up"
   s.summary     = %q{Determine what methods can be called on an object that return a given value}
   s.description = %q{Determine what methods can be called on an object that return a given value}
 
