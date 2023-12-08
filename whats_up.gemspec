@@ -18,12 +18,6 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency "sdoc"
   
-  s.add_development_dependency "autotest"
   s.add_development_dependency "bundler"
   s.add_development_dependency "rspec"
-
-  if RUBY_PLATFORM =~ /darwin/
-    s.add_development_dependency "autotest-fsevent"
-    s.add_development_dependency "autotest-growl"
-  end
 end
