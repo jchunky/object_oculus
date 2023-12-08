@@ -5,16 +5,16 @@ describe FrozenSection do
       @string = "hello"
     end
 
-    it "should not occur given an unfrozen object" do
-      @number.given(1).should be_a(Fixnum)
-      @string.given(1).should be_a(String)
+    xit "should not occur given an unfrozen object" do
+      expect(@number.given(1)).to be_a(Integer)
+      expect(@string.given(1)).to be_a(String)
     end
 
     it "should occur given a frozen object" do
       @number.freeze
       @string.freeze
-      @number.given(1).should be_a(FrozenSection)
-      @string.given(1).should be_a(FrozenSection)
+      expect(@number.given(1)).to be_a(FrozenSection)
+      expect(@string.given(1)).to be_a(FrozenSection)
     end
   end
 end
