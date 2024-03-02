@@ -5,9 +5,9 @@ require "whats_up/version"
 Gem::Specification.new do |s|
   s.name        = "whats_up"
   s.version     = WhatsUp::VERSION
-  s.authors     = ["Bryan McKelvey", "Dr Nic Williams"]
-  s.email       = ["bryan.mckelvey@gmail.com", "drnicwilliams@gmail.com"]
-  s.homepage    = "http://brymck.herokuapp.com/"
+  s.authors     = ["Jason Cheong-Kee-You", "Bryan McKelvey", "Dr Nic Williams"]
+  s.email       = ["j.chunky@gmail.com", "bryan.mckelvey@gmail.com", "drnicwilliams@gmail.com"]
+  s.homepage    = "https://github.com/jchunky/whats_up"
   s.summary     = %q{Determine what methods can be called on an object that return a given value}
   s.description = %q{Determine what methods can be called on an object that return a given value}
 
