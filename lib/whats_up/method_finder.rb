@@ -114,7 +114,12 @@ module WhatsUp
                          "#{pretty_object}.#{key}"
                        end
 
-          pretty_value = truncate_inspect(value, to: 120)
+          pretty_value =
+            begin
+              truncate_inspect(value, to: 120)
+            rescue => ex
+              ex.class
+            end
 
           [pretty_key, pretty_value]
         end
