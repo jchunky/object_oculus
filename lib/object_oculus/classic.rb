@@ -9,14 +9,14 @@ module ObjectOculus
   #   require "object_oculus/classic"
   #
   # or, if object_oculus is already loaded:
-  # 
+  #
   #   ObjectOculus::Classic  # which triggers object_oculus/classic to autoload
   module Classic
-    alias :what?      :what_equals
-    alias :exactly?   :whats_exactly
-    alias :matches?   :what_matches
-    alias :works?     :what_works_with
-    alias :not_blank? :whats_not_blank_with
+    alias what? what_equals
+    alias exactly? whats_exactly
+    alias matches? what_matches
+    alias works? what_works_with
+    alias not_blank? whats_not_blank_with
   end
 
   class MethodFinder
@@ -24,6 +24,6 @@ module ObjectOculus
   end
 end
 
-class Object  # :nodoc:
+class Object # :nodoc:
   include ObjectOculus::Classic
 end

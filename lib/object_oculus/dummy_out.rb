@@ -4,7 +4,7 @@ module ObjectOculus
     # Does nothing (instead of writing to an IO stream)
     def write(*args)
     end
-    alias :print :write
-    alias :puts  :write
+    alias print write
+    alias puts write
   end
 end

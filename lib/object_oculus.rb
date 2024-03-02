@@ -24,14 +24,14 @@
 # * Simple[http://www.doublegifts.com/pub/ruby/methodfinder.rb.html]
 # * {Checks permutations of arguments}[http://www.doublegifts.com/pub/ruby/methodfinder2.rb.html]
 module ObjectOculus
-  autoload :Classic,       "object_oculus/classic"
-  autoload :DummyOut,      "object_oculus/dummy_out"
+  autoload :Classic, "object_oculus/classic"
+  autoload :DummyOut, "object_oculus/dummy_out"
   autoload :FrozenSection, "object_oculus/frozen_section"
-  autoload :MethodFinder,  "object_oculus/method_finder"
-  autoload :Methods,       "object_oculus/methods"
-  autoload :VERSION,       "object_oculus/version"
+  autoload :MethodFinder, "object_oculus/method_finder"
+  autoload :Methods, "object_oculus/methods"
+  autoload :VERSION, "object_oculus/version"
 end
 
-class Object  # :nodoc:
+class Object # :nodoc:
   include ObjectOculus::Methods
 end

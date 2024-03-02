@@ -3,5 +3,5 @@ require "object_oculus"
 include ObjectOculus
 
 RSpec.configure do |config|
-  config.deprecation_stream = '/dev/null'
+  config.deprecation_stream = "/dev/null"
 end

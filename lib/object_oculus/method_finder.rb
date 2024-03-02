@@ -3,16 +3,37 @@ module ObjectOculus
   # values with an expected result. ny matches will then be pretty printed to the console.
   class MethodFinder
     # A list of symbols indicated which methods to always ignore
-    @@blacklist  = %w(daemonize debug debugger display ed emacs exec exit! fork mate nano sleep
-                      stub stub! stub_chain syscall system unstub unstub! vi vim).map(&:to_sym)
+    @@blacklist = %w[
+      daemonize
+      debug
+      debugger
+      display
+      ed
+      emacs
+      exec
+      exit!
+      fork
+      mate
+      nano
+      sleep
+      stub
+      stub!
+      stub_chain
+      syscall
+      system
+      unstub
+      unstub!
+      vi
+      vim
+    ].map(&:to_sym)
     @@blacklist += Methods.instance_methods
 
     # A list of symbols for infix operators for which Ruby has special syntax
-    @@infixes    = %w(+ - * / % ** == != =~ !~ !=~ > < >= <= <=> === & | ^ << >>).map(&:to_sym)
-    
+    @@infixes = %w[+ - * / % ** == != =~ !~ !=~ > < >= <= <=> === & | ^ << >>].map(&:to_sym)
+
     # A list of symbols for prefix operators for which Ruby has special syntax
-    @@prefixes   = %w(+@ -@ ~ !).map(&:to_sym)
-    
+    @@prefixes = %w[+@ -@ ~ !].map(&:to_sym)
+
     class << self
       # Builds a lambda for checking against the provided +expected_result+ given a hash of options.
       # Given the value of a method, the result of this lambda will determine whether that method
@@ -37,7 +58,7 @@ module ObjectOculus
           if opts[:exclude_blank]
             ->(value) { !value.nil? && !(value.respond_to?(:empty?) && value.empty?) }
           else
-            ->(value) { true }
+            ->(_value) { true }
           end
         else
           ->(value) { expected_result == value }
@@ -46,7 +67,7 @@ module ObjectOculus
 
       # Find all methods on +an_object+ which, when called with +args+ return +expected_result+
       def find(an_object, expected_result, opts = {}, *args, &block)
-        check_result    = build_check_lambda(expected_result, opts)
+        check_result = build_check_lambda(expected_result, opts)
 
         # Prevent any writing to the terminal
         stdout, stderr = $stdout, $stderr
@@ -60,33 +81,32 @@ module ObjectOculus
         methods.select! { |n| an_object.method(n).arity <= args.size && !@@blacklist.include?(n) }
 
         # Collect all methods equaling the expected result
-        results = methods.inject({}) do |res, name|
+        results = methods.each_with_object({}) do |name, res|
           stdout.print ""
           begin
             value = an_object.clone.method(name).call(*args, &block)
             res[name] = value if check_result.call(value)
-          rescue
+          rescue StandardError
           end
-          res
         end
 
         # Restore printing to the terminal
         $stdout, $stderr = stdout, stderr if restore_std
         results
       end
-      
+
       # Pretty prints the results of #find
-      def show(an_object, expected_result, opts = {}, *args, &block)
+      def show(an_object, expected_result, opts = {}, *args, &)
         opts = {
           exclude_blank: false,
-          force_exact:   false,
-          force_regex:   false,
-          show_all:      false
+          force_exact: false,
+          force_regex: false,
+          show_all: false,
         }.merge(opts)
 
-        found      = find(an_object, expected_result, opts, *args, &block)
+        found = find(an_object, expected_result, opts, *args, &)
         prettified = prettify_found(an_object, found, *args)
-        max_length = prettified.map { |k, v| k.length }.max
+        max_length = prettified.map { |k, _v| k.length }.max
 
         prettified.each { |k, v| puts "#{k.ljust max_length} == #{v}" }
 
@@ -98,14 +118,14 @@ module ObjectOculus
       # Pretty prints a method depending on whether it's an operator, has arguments, is array/hash
       # syntax, etc.
       def prettify_found(an_object, found, *args)
-        args = args.map { |a| a.inspect }.join(", ")
+        args = args.map(&:inspect).join(", ")
         pretty_object = truncate_inspect(an_object, to: 40)
 
         found.map do |key, value|
           pretty_key = if @@infixes.include?(key)
                          "#{pretty_object} #{key} #{args}"
                        elsif @@prefixes.include?(key)
-                         "#{key.to_s.sub /\@$/, ""}#{pretty_object}"
+                         "#{key.to_s.sub(/@$/, '')}#{pretty_object}"
                        elsif key == :[]
                          "#{pretty_object}[#{args}]"
                        elsif args != ""
@@ -117,8 +137,8 @@ module ObjectOculus
           pretty_value =
             begin
               truncate_inspect(value, to: 120)
-            rescue => ex
-              ex.class
+            rescue StandardError => e
+              e.class
             end
 
           [pretty_key, pretty_value]
@@ -129,14 +149,14 @@ module ObjectOculus
       # provided <tt>to:</tt> argument if necessary
       def truncate_inspect(object, opts = {})
         max_length = opts[:to] || 80
-        full       = object.inspect
+        full = object.inspect
 
         if full.length > max_length
-          available_length = max_length - 5  # to account for the " ... "
-          left_cutoff      = available_length * 2 / 3
-          right_cutoff     = available_length - left_cutoff - 1
+          available_length = max_length - 5 # to account for the " ... "
+          left_cutoff = available_length * 2 / 3
+          right_cutoff = available_length - left_cutoff - 1
 
-          "#{full[0..left_cutoff]} ... #{full[-right_cutoff..-1]}"
+          "#{full[0..left_cutoff]} ... #{full[-right_cutoff..]}"
         else
           full
         end

@@ -21,7 +21,8 @@ module ObjectOculus
 
     # An override of Methods#show_methods that passes the object stored in <tt>@object</tt> instead of
     # +self+
-    def show_methods(expected_result, opts = {}, *args, &block)  # :doc:
+    # :doc:
+    def show_methods(expected_result, opts = {}, *args, &)
       @args = args unless args.empty?
       MethodFinder.show(@object, expected_result, opts, *@args)
     end
