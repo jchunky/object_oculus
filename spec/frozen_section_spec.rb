@@ -1,20 +1,20 @@
-describe FrozenSection do
+RSpec.describe FrozenSection do
   describe "initialization" do
-    before :each do
+    before(:each) do
       @number = 2
       @string = "hello"
     end
 
     it "should not occur given an unfrozen object" do
-      @number.given(1).should be_a(Fixnum)
-      @string.given(1).should be_a(String)
+      expect(@number.given(1)).to be_a(Fixnum)
+      expect(@string.given(1)).to be_a(String)
     end
 
     it "should occur given a frozen object" do
       @number.freeze
       @string.freeze
-      @number.given(1).should be_a(FrozenSection)
-      @string.given(1).should be_a(FrozenSection)
+      expect(@number.given(1)).to be_a(FrozenSection)
+      expect(@string.given(1)).to be_a(FrozenSection)
     end
   end
 end
