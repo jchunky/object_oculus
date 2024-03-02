@@ -6,8 +6,11 @@ RSpec.describe FrozenSection do
     end
 
     it "should not occur given an unfrozen object" do
-      expect(@number.given(1)).to be_a(Fixnum)
       expect(@string.given(1)).to be_a(String)
+    end
+
+    it "should occur given an integer" do
+      expect(@number.given(1)).to be_a(FrozenSection)
     end
 
     it "should occur given a frozen object" do
