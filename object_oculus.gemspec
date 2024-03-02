@@ -7,6 +7,7 @@ Gem::Specification.new do |s|
   s.email = "j.chunky@gmail.com"
   s.homepage = "https://github.com/jchunky/object_oculus"
   s.licenses = ["MIT"]
+  s.metadata["rubygems_mfa_required"] = "true"
   s.platform = Gem::Platform::RUBY
   s.version = ObjectOculus::VERSION
   s.summary = "Rapidly explore an object's API in 'irb'"
@@ -18,7 +19,7 @@ Gem::Specification.new do |s|
   s.files = `git ls-files`.split("\n")
   s.require_paths = ["lib"]
 
+
   s.add_development_dependency "rspec", "~> 3.0"
   s.add_development_dependency "rubocop", "~> 1.0"
-  s.metadata["rubygems_mfa_required"] = "true"
 end
