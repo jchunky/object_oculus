@@ -25,9 +25,8 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler
   object_oculus!
-  rspec
+  rspec (~> 3.0)
 
 BUNDLED WITH
    2.5.6
