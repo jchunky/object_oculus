@@ -1,9 +1,9 @@
-module WhatsUp
+module ObjectOculus
   # A classic designed to allow variables to be stored along with a frozen object.
   #
-  # Frozen objects can't have new instance variables added directly, so this prevents whats_up
+  # Frozen objects can't have new instance variables added directly, so this prevents object_oculus
   # methods from being locked out of inspecting anything frozen. This proxy class should be
-  # initialized automatically if whats_up detects that the object it's to inspect is frozen.
+  # initialized automatically if object_oculus detects that the object it's to inspect is frozen.
   class FrozenSection
     # The frozen object
     attr_reader :object

@@ -1,4 +1,4 @@
-module WhatsUp
+module ObjectOculus
   # A singleton class used to iterate over the methods of an object trying to match any returned
   # values with an expected result. ny matches will then be pretty printed to the console.
   class MethodFinder
@@ -16,7 +16,7 @@ module WhatsUp
     class << self
       # Builds a lambda for checking against the provided +expected_result+ given a hash of options.
       # Given the value of a method, the result of this lambda will determine whether that method
-      # and value are included in the output of a whats_up method.
+      # and value are included in the output of a object_oculus method.
       #
       # ==== Options
       #

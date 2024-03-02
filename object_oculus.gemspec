@@ -1,13 +1,13 @@
 # -*- encoding: utf-8 -*-
 $LOAD_PATH.push File.expand_path("../lib", __FILE__)
-require "whats_up/version"
+require "object_oculus/version"
 
 Gem::Specification.new do |s|
-  s.name        = "whats_up"
-  s.version     = WhatsUp::VERSION
+  s.name        = "object_oculus"
+  s.version     = ObjectOculus::VERSION
   s.authors     = ["Jason Cheong-Kee-You", "Bryan McKelvey", "Dr Nic Williams"]
   s.email       = ["j.chunky@gmail.com", "bryan.mckelvey@gmail.com", "drnicwilliams@gmail.com"]
-  s.homepage    = "https://github.com/jchunky/whats_up"
+  s.homepage    = "https://github.com/jchunky/object_oculus"
   s.summary     = %q{Determine what methods can be called on an object that return a given value}
   s.description = %q{Determine what methods can be called on an object that return a given value}
 
@@ -19,3 +19,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency "bundler"
   s.add_development_dependency "rspec"
 end
+

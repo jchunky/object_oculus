@@ -1,4 +1,4 @@
-module WhatsUp
+module ObjectOculus
   # A class to suppress anything that would normally output to $stdout
   class DummyOut
     # Does nothing (instead of writing to an IO stream)

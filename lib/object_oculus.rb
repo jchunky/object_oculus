@@ -1,4 +1,4 @@
-# whats_up enables you to determine what methods can be called on an object that return a given
+# object_oculus enables you to determine what methods can be called on an object that return a given
 # value
 #
 # === Some credits from Dr. Nic
@@ -23,15 +23,15 @@
 # David Tran's versions:
 # * Simple[http://www.doublegifts.com/pub/ruby/methodfinder.rb.html]
 # * {Checks permutations of arguments}[http://www.doublegifts.com/pub/ruby/methodfinder2.rb.html]
-module WhatsUp
-  autoload :Classic,       "whats_up/classic"
-  autoload :DummyOut,      "whats_up/dummy_out"
-  autoload :FrozenSection, "whats_up/frozen_section"
-  autoload :MethodFinder,  "whats_up/method_finder"
-  autoload :Methods,       "whats_up/methods"
-  autoload :VERSION,       "whats_up/version"
+module ObjectOculus
+  autoload :Classic,       "object_oculus/classic"
+  autoload :DummyOut,      "object_oculus/dummy_out"
+  autoload :FrozenSection, "object_oculus/frozen_section"
+  autoload :MethodFinder,  "object_oculus/method_finder"
+  autoload :Methods,       "object_oculus/methods"
+  autoload :VERSION,       "object_oculus/version"
 end
 
 class Object  # :nodoc:
-  include WhatsUp::Methods
+  include ObjectOculus::Methods
 end

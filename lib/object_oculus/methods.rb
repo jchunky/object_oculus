@@ -1,5 +1,5 @@
-module WhatsUp
-  # The methods added to all objects by whats_up
+module ObjectOculus
+  # The methods added to all objects by object_oculus
   module Methods
     # Provides a list of arguments that will be used when trying to find matching methods.
     #

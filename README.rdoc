@@ -1,4 +1,4 @@
-= whats\_up
+= object\_oculus
 
 This is a fork of Dr. Nic's excellent little what_methods utility, updated a bit to expand
 functionality and bring syntax a bit more in line with the Ruby status quo. It's actually been
@@ -98,5 +98,5 @@ current methods and +whats_not_blank_with+ that ignores any false, falsy or empt
     "hello".upto(2) == #<Enumerator: "hello":upto(2)>
     # ...
 
-In line with the original +what_methods+ gem, you can <tt>require "whats_up/classic"</tt> to enable
+In line with the original +what_methods+ gem, you can <tt>require "object_oculus/classic"</tt> to enable
 aliases like +what?+, +matches?+, +exactly?+, +works?+ and +not_blank?+.

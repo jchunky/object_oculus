@@ -1,16 +1,16 @@
-require "whats_up"
+require "object_oculus"
 
-module WhatsUp
+module ObjectOculus
   # This module contains the original +what?+ method, as well as some aliases for newer methods. In
   # line with the current expectation that a Ruby method ending in +?+ returns a true or false value
   # (or at least something truthy or falsy), I've decided not to make +what?+ and it's brethren the
   # default. You can include them by:
   #
-  #   require "whats_up/classic"
+  #   require "object_oculus/classic"
   #
-  # or, if whats_up is already loaded:
+  # or, if object_oculus is already loaded:
   # 
-  #   WhatsUp::Classic  # which triggers whats_up/classic to autoload
+  #   ObjectOculus::Classic  # which triggers object_oculus/classic to autoload
   module Classic
     alias :what?      :what_equals
     alias :exactly?   :whats_exactly
@@ -25,5 +25,5 @@ module WhatsUp
 end
 
 class Object  # :nodoc:
-  include WhatsUp::Classic
+  include ObjectOculus::Classic
 end
