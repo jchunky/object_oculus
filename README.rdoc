@@ -7,7 +7,7 @@ it.
 
 <b>Dr. Nic says</b> (or is heard from echoes traversing the sands of time)<b>:</b>
 
-This is from Dr. Nic.  See http://drnicwilliams.com/2006/10/12/my-irbrc-for-consoleirb/
+This is from Dr. Nic.
 
 Ever asked: "if I have an object, what method can I call on it to get that result?"
 
