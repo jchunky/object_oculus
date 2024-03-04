@@ -134,12 +134,7 @@ module ObjectOculus
                          "#{pretty_object}.#{key}"
                        end
 
-          pretty_value =
-            begin
-              truncate_inspect(value, to: 120)
-            rescue StandardError => e
-              e.class
-            end
+          pretty_value = truncate_inspect(value, to: 120)
 
           [pretty_key, pretty_value]
         end
@@ -160,6 +155,8 @@ module ObjectOculus
         else
           full
         end
+      rescue StandardError => e
+        e.class
       end
     end
   end
