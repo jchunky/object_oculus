@@ -156,7 +156,7 @@ module ObjectOculus
           full
         end
       rescue StandardError => e
-        e.class
+        e.class.to_s
       end
     end
   end
